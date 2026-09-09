@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Countdown and Delivery-rider safety</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to report</a>
+<div id="tt" role="status"></div>
+
+<nav class="topbar" aria-label="Report sections">
+  <div class="wrap">
+    <a class="brand" href="#hero">The Countdown: Delivery-rider Safety Report</a>
+    <div class="versions" aria-label="Report versions">
+    </div>
+    <div class="toc">
+      <a href="#intro">Intro</a>
+      <a href="#magnitude">Timed-VS-Untimed</a>
+      <a href="#squeeze">Squeeze</a>
+      <a href="#risk">Riksy-Platforms</a>
+      <a href="#cities">Other-Cities</a>
+      <a href="#suzhou">Policy-Effects</a>
+      <a href="#suggest">Suggest</a>
+      <a href="#limits">Limits</a>
+    </div>
+  </div>
+</nav>
+
+
+<header class="hero" id="hero">
+  <div class="wrap">
+    <h1>Traffic Violations</h1>
+    <h1>on the road</h1>
+        <section class="overview-box" aria-label="Overview">
+                <p class="overview-kicker">Prologue</p>
+      <p>
+        In my economics essay, I wrote about Amazon and Jeff Bezos, asking whether his wealth came at the expense of customers, workers, both or neither. I concluded that Amazon began as a genuine Schumpeterian innovator but gradually converted its competitive advantages into platform rents, extracting value from infrastructure control rather than competing on equal terms. The costs fell disproportionately on workers, whose productivity surged while their wages stagnated under algorithmic management and monopsony power. That frustration, however, is not unique to Amazon's warehouse floors. The same logic of platform driven pressure, timed to the minute, tracked by algorithms, enforced by customers who can tap a button to demand speed, traps delivery riders on city streets, where the cost of a late arrival is measured not in points or pay, but in crashes and injuries.
+      <p>
+In September 2020, China’s People Magazine published an investigation into delivery drivers’ poor conditions. Soon, more reports from Chinese and international media revealed how delivery app algorithms pushed the riders to take extreme risks to deliver orders on time. The issue caught the attention of Chinese regulators, who have since implemented new guidelines to adjust delivery times, reduce labor intensity, and ensure workers are paid a fair wage regardless of algorithmic assessments. However, 6 years have passed, and delivery workers are still sprinting in the endless cycle.</p>
+      <p>This depressive system in China’s delivery platform economy requires riders to run faster, not safer. That is why I am very excited to find out about Suzhou’s new policy. In the wake of traffic police data released in Shanghai and the new Suzhou policy, I built this data analysis report to examine how the countdown clock shapes rider behavior and what happens when platforms promise something timed to the minute. I hope it encourages more people to think about a larger question. When productivity gains flow upward and risks flow downward, what does fairness look like, and what would it take to prevent the next crash?</p>
+    </section>
+
+
+    <section class="timerdash" id="timerDash" aria-label="Live event timer dashboard">
+      <div class="td-head">
+        <div class="td-tabs" role="tablist" aria-label="Timer category">
+          <button type="button" role="tab" aria-selected="true" data-metric="violations">in Shanghai </button>
+          <button type="button" role="tab" aria-selected="false" data-metric="accidents">in China </button>
+          <button type="button" role="tab" aria-selected="false" data-metric="order">Per Order</button>
+        </div>
+      </div>
+      <div class="td-clock-wrap">
+        <svg class="td-ring" viewBox="0 0 260 260" aria-hidden="true">
+          <circle cx="130" cy="130" r="108" class="td-ring-bg"></circle>
+          <circle cx="130" cy="130" r="108" class="td-ring-fg" id="tdRingFg"></circle>
+        </svg>
+        <div class="td-core">
+          <p class="td-copy" id="tdCopy">text placeholder</p>
+          <p class="td-time" id="tdTime">00:00</p>
+          <button type="button" id="tdOrderBtn" class="td-order-btn" style="display:none;">Place an Order</button>
+        </div>
+      </div>
+      <div class="td-metrics" id="tdMetrics">
+        <div class="td-badge"><span class="k">today</span><span class="v" id="tdToday">0</span></div>
+        <div class="td-badge"><span class="k">this month</span><span class="v" id="tdMonth">0</span></div>
+        <div class="td-badge"><span class="k">this year</span><span class="v" id="tdYear">0</span></div>
+      </div>
+    </section>
+         <p>
+      Instant-delivery platforms sell a promise timed to the minute. When that promise collides with a red light, the rider can either wait (and risk being late) or go (and risk a crash).
+    </p>
+    <p>In 2026, Shanghai police recorded roughly 2,000 traffic violations and crashes involving delivery riders daily.
+      It is no surprise that 91.5% of Shanghai residents reported that they have witnessed riders breaking traffic rules.
+Nationally, China has more than 10 million food and instant-delivery riders; at a violation rate of 115 per 1,000 riders, that translates to one violation happening every 1.054 seconds.</p>
+</p>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- 1. Introduction -->
+<section id="intro">
+  <div class="wrap reveal">
+    <p class="eyebrow">01 — What this project is</p>
+    <h2>A decision-support report: include traffic waiting time in delivery time</h2>
+    <Pilot>
+      Recently, Suzhou’s answer to solving delivery-rider traffic violations is to stop the clock countdown during red lights automatically. Pilot began August 2026 in Gusu District and Suzhou Industrial Park. Red-light waiting time is excluded from delivery timing. The deadline is extended by the wait.</p>
+    <p>A networked traffic-signal platform exchanges data with delivery platforms, automatically strips the invalid interval, and extends the countdown. The rider does not file an appeal.</p>
+    <svg id="loop" class="chart" role="img" aria-label="Causal loop: consumer impatience, platform deadline, time pressure, violation, crash"></svg>
+    <p>
+      This report asks whether the crash record, the consumer record, and the before/after record of related tools support doing that more widely — and what else would still have to change if they do.
+    </p>
+  </div>
+
+</section>
+
+<!-- 2. Magnitude -->
+<section id="magnitude">
+  <div class="wrap reveal">
+    <p class="eyebrow">02 — How time affects accdident rates </p>
+    <h2> Food & Instant (timed) vs Parcel Express (not-timed)</h2>
+    <p>We obtained two weeks of rider-level traffic data from Shanghai, covering two types of delivery: Food & Instant, where riders operate under delivery time pressure, and Parcel Express, which is not subject to the same timed-delivery system. Comparing the two groups allows us to examine how delivery time pressure is associated with traffic violations and accident rates.
+</p>
+    <div class="mag-cal-wrap">
+      <div class="mag-cal" id="magCalFood" role="img" aria-label="Weekly calendar heatmap for food and instant lane"></div>
+    </div>
+    <div class="mag-cal-wrap">
+      <div class="mag-cal" id="magCalExpress" role="img" aria-label="Weekly calendar heatmap for parcel express lane"></div>
+    </div>
+    <p>Parcel couriers ride the same roads on the same electric bikes, but they aren't racing a minute-by-minute delivery deadline. Food and instant-retail riders are. Holding almost everything else constant, that single difference tracks a large safety gap. Drivers with a live countdown is 1.4–3.2× more violation-prone and 1.8–6.5× more at-fault than parcel express.</p>
+    <div class="controls">
+      <div class="ctl"><label>Period</label>
+        <select class="period-select" id="nePeriod" aria-label="Select fortnight"></select>
+      </div>
+    </div>
+    <div class="ne">
+      <div class="card">
+        <h3>Traffic violations</h3>
+        <div class="mult" id="mV">2.2×<small>food/instant vs. express, per rider</small></div>
+        <div class="bars" id="bV"></div>
+      </div>
+      <div class="card">
+        <h3>At-fault accidents</h3>
+        <div class="mult" id="mA">3.6×<small>food/instant vs. express, per 100 riders</small></div>
+        <div class="bars" id="bA"></div>
+      </div>
+    </div>
+    <p class="prov" id="neProv"></p>
+    <div class="callout">This is the closest thing in the project to causal evidence: the lane
+      with the deadline is several times more dangerous per person. Honest caveat — express
+      fleets may skew older or more experienced, and parcel work has volume pressure of its
+      own, so treat it as a strong quasi-experiment, not a controlled trial.</div>
+   <p>In the eyes of researcher Sun Ping from the Chinese Academy of Social Sciences, speeding, running red lights, and riding against traffic by food delivery riders are forms of “counter-algorithm” behaviour. She believes that these actions are labour practices that food delivery riders are forced to adopt under the long-term control and training of the system algorithm. The direct consequence of this counter-algorithm behaviour is the sharp increase in the number of traffic accidents experienced by food delivery riders.
+
+Sun Ping began researching the digital labour relationship between food delivery system algorithms and delivery riders in 2017. When discussing the increasing number of traffic accidents with Renwu magazine, she said that shorter delivery times are definitely the most important reason.</p>
+
+
+    </div>
+
+</section>
+
+<!-- 3. The squeeze -->
+<section id="squeeze">
+  <div class="wrap reveal">
+    <p class="eyebrow">03 — The squeeze</p>
+    <h2>The clock was shortened as strategy.</h2>
+    <p>In 2025, Meituan reported 34 min as the average for all fulfilled delivery orders on a 15 billion-order instant-retail peak day.
+      It said its average delivery duration had fallen significantly over three years of dispatch-system work since 2016.</p>
+    <div class="squeeze-play" id="squeezePlay">
+      <div class="sq-years" role="tablist" aria-label="3 km maximum by year">
+        <button type="button" data-i="0" aria-pressed="true">2016</button>
+        <button type="button" data-i="1" aria-pressed="false">2017</button>
+        <button type="button" data-i="2" aria-pressed="false">2018</button>
+      </div>
+      <div class="sq-stage">
+        <div class="sq-face" id="sqFace" role="img" aria-label="Sixty minute marks. Filled marks are the remaining 3 km cap."></div>
+        <div class="sq-read">
+          <span class="sq-lab">3 km covered in</span>
+          <span class="sq-min num" id="sqMin">60</span>
+          <span class="sq-unit">min</span>
+        </div>
+      </div>
+    </div>
+    <p>Delivery driver can nenver rely on personal strenght to fight against the time allocated by the system and they can only make up for the time via speeding.</p>
+        <h3>Shanghai Quality Association User Evaluation Center survey, 2025</h3>
+    <div id="surveyBars" aria-label="Consumer survey headline shares"></div>
+    <div id="seenBars" aria-label="Most-seen rider violations"></div>
+        <p>The most commonly observed rule violations reveal how time pressure translates into risky riding behavior, creating a chain from violations to crashes that can ultimately trigger even tighter delivery deadlines.
+        </p>
+      <p>This places drivers in increasingly risky positions as they drive against the traffic flows, accelerate and run red lights to deliver on time. Risky riding should not be explained simply as a lack of personal safety awareness. Work-related stress among on-demand delivery riders mainly stems from platform rules, penalties for late delivery, negative customer reviews, heavy workloads, and unstable employment relationships.
+</p>
+    <div class="wrap reveal">
+  </div>
+  </div>
+</section>
+
+
+<section id="risk">
+  <div class="wrap reveal">
+    <p class="eyebrow">04 - Who is most at risks</p>
+      <h2>The worst records belong to the newest entrants in the delivery industry.</h2>
+        <p>The highest per-rider violation rates cluster in newer instant-delivery businesses, while mature food-delivery operations sit lower—suggesting the risk is driven more by the delivery model than the brand.</p>
+
+  <div class="controls">
+        <div class="seg" id="trMetric" role="group" aria-label="Select trend metric">
+          <button data-m="violations" aria-pressed="true">Violations / rider</button>
+          <button data-m="accidents" aria-pressed="false">At-fault / 100 riders</button>
+        </div>
+      </div>
+    <svg id="trend" class="chart" role="img" aria-label="Food vs express rates over fourteen fortnights"></svg>
+        <p class="lead">Rates <em>per registered rider</em>, by company, every two weeks.
+      14 tables, 29 Dec 2025–2 Aug 2026. Two fortnights missing (18–31 May; 29 Jun–5 Jul).</p>
+
+      <div class="legend" id="trendLegend"></div>
+            <p>More details on platform differences can be seen here.</p>
+          <div class="seg" id="rkMetric" role="group" aria-label="Select metric">
+          <button data-m="violations" aria-pressed="true">Violations / rider</button>
+          <button data-m="accidents" aria-pressed="false">At-fault / 100 riders</button>
+        </div>
+
+        <select class="period-select" id="rkPeriod" aria-label="Select fortnight"></select>
+
+
+    <svg id="rankChart" class="chart" role="img" aria-label="Per-rider safety rate by company"></svg>
+    <div class="legend">
+      <span><i style="background:var(--grocery)"></i>Instant-grocery entrant</span>
+      <span><i style="background:var(--food)"></i>Other food / courier</span>
+      <span><i style="background:var(--express)"></i>Parcel express</span>
+    </div>
+    <p class="prov" id="rkProv"></p>
+
+</div>
+</section>
+
+
+<!-- 7. Cross-city problem -->
+<section id="cities">
+  <div class="wrap reveal">
+    <p class="eyebrow">05 — where delivery accidents also happen</p>
+    <h2>Check out stats from other cities</h2>
+        <p>Couriers are reported to account for 30 % of TTW road crashes in China (Traffic Management Bureau of the Ministry of Public Security, 2019). Shanghai was never a standalone case.</p>
+
+    <div class="city-map-block">
+      <div id="cityHeatMap" class="city-heat-map" role="img" aria-label="Map of Eastern China with Nanjing and Ningbo incident highlights"></div>
+    </div>
+
+    <p>Placing evidence from China in an international context shows that occupational health risks associated with platform-based delivery work share recurring patterns across settings, while also reflecting important structural differences. Studies from Greece, Vietnam, Colombia, Italy, South Korea, India, and Thailand have reported associations between time pressure, income insecurity, and fatigue on the one hand, and traffic injuries, musculoskeletal symptoms, and psychological distress on the other. These findings suggest that such risks are not unique to China but may be linked to broader features of platform-based, on-demand delivery work organisation.
+</p>
+
+  </div>
+</section>
+
+<!-- 8. What Suzhou did -->
+<section id="suzhou">
+  <div class="wrap reveal">
+    <p class="eyebrow">06 — What Suzhou did and what it actually adds</p>
+    <h2>Making the exclusion automatic and state-enforced.</h2>
+    <h3 style="font-size:22px;margin:36px 0 12px">Similar interventions have achieved</h3>
+    <div class="outcomes" id="outcomeBars"></div>
+    <div class="steel">
+      <h3>How platforms have already changed</h3>
+      <ul>
+        <li>Platforms have dropped per-order cash deductions for bad reviews and lateness — Meituan shifted to a <b>monthly points</b> system.</li>
+        <li>Algorithms already build in appeal channels for red-light duration, no-elevator buildings, road closures, and <span class="num">30+</span> abnormal scenarios.</li>
+        <li>Industry view: the deeper driver is the <b>piece-rate</b> (“more orders, more pay”) structure — riders keep rushing even if time limits are removed — compounded by consumer speed demands.</li>
+        <li>Meituan added 12-hour forced offline; Ele.me ties station-manager pay to rider safety; Dingdong pays cash bonuses for zero-violation riders.</li>
+        <li>Meituan riders average 5.18–6.22 hours of order-running per day — shorter than the 10-hour share above, because that share counts the whole working day, not minutes on a live order.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 9. Policy suggestions -->
+<section id="suggest">
+  <div class="wrap reveal">
+    <p class="eyebrow">07 — Conclusion</p>
+    <h2>Policy suggestions</h2>
+    <div class="recs-split">
+      <article class="rec">
+        <p class="rk">01 </p>
+        <h3> Scale the Gusu and Suzhou Industrial Park model to other districts with connected traffic signal infrastructure </h3>
+<p>Extend the pilot to districts that already have networked traffic signal systems capable of data exchange with delivery platforms. Keep traffic police as the lead agency, as this is a traffic safety measure rather than a labor regulation.</p>      <article class="rec">
+        <p class="rk">02 </p>
+        <h3> Maintain existing rider safeguards while addressing their limitations.
+</h3>
+<p>Keep the four hour rest reminder, twelve hour offline limit, and violation free rewards in place. However, these measures do not address the piece rate compensation structure, which remains the primary driver of risky riding even when red light time is excluded from the clock.</p>      </article>
+      <article class="rec">
+        <p class="rk">03 </p>
+        <h3> Focus regulatory attention on instant grocery delivery as a distinct business model.
+ </h3>
+<p>The highest violation rates cluster in instant grocery delivery, where tighter windows and perishable goods create greater pressure. Target the business model itself rather than individual brands.</p>      <article class="rec">
+        <p class="rk">04 </p>
+        <h3> Pause the customer urge delivery button whenever the traffic signal system stops the delivery clock</h3>
+<p>Platforms have moved away from cash penalties toward monthly points systems, but the urge delivery button remains a source of customer pressure. When the clock pauses at a red light, the customer facing timer should also pause and the urge button should be disabled.</p>
+      </article>
+      <article class="rec">
+        <p class="rk">05</p>
+        <h3>Require all adopting districts to report five standardized metrics.</h3>
+<p>Districts should report traffic violations per rider, at fault crashes per rider, accidents per million orders, share of delivery time paused by red lights, and delivery related healthcare costs. These metrics would allow systematic evaluation of safety benefits against effects on delivery time, employment, and public spending.</p>      </article>
+    </div>
+
+        <section class="overview-box" aria-label="Conclusion overview">
+      <p class="overview-kicker">Epilogue</p>
+      <p>When setting delivery time limits and performance metrics, platforms should consider restaurant preparation time, traffic conditions, weather, building environments, delivery distance, and safety requirements.  Unfortunately, as all food delivery platforms are pursuing maximum profit, in the end, they shifted the risks onto riders with the least bargaining power.</p>
+    </section>
+  </div>
+</section>
+
+<!-- 9. Costs, benefits, limits -->
+<section id="limits">
+  <div class="wrap reveal">
+    <p class="eyebrow">8 — limits</p>
+    <h2>What this report cannot show.</h2>
+
+    <div class="caveats">
+      <ul>
+        <li>These Shanghai rates are <b>company-level</b>. They reflect business model, workforce and fleet mix — they don't <em>prove</em> the algorithm causes the crashes.</li>
+        <li>Small platforms produce volatile rates and noisy zeros; a "0*" often means "too few riders to register," not "perfectly safe." 0* = reported (zero) accidents.</li>
+        <li>Fourteen fortnights is a direction, not a finished time series. Two collected gaps remain (18–31 May; 29 June–5 July). The 9–22 February accident multiple (15×) is an express-lane zero cluster, not a new regime.</li>
+        <li>The data still doesn't say <b>what share of delivery time is spent waiting at red lights</b> — the open question for sizing the policy's actual time recovery.</li>
+        <li>Cross-city fragments have <b>no common exposure denominator</b>. The correct per-million-order accident rate is not published city-by-city, which is why those cards were never ranked.</li>
+        <li>The August 2026 Gusu / SIP pilot has <b>no outcome data yet</b>. Prior Suzhou (−41%) and Shanghai (−42.9% deaths) results describe other tools, other years.</li>
+        <li>Piece-rate incentives are not turned off by excluding red-light time. The steelman stands: riders may still rush between lights.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Generated source list</p>
+    <ul id="sourceList"></ul>
+  </div>
+</footer>
+
+<script src="report.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</body>
+</html>
